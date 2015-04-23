@@ -179,6 +179,18 @@ Authenticates the account. If successful, the account will be returned.
       console.log(account)
     })
 
+## Curl Command
+
+### Add/Modify account
+```bash
+$ curl --user foo:bar -l -H "Content-type: application/json" -X POST -d '[{"password": "secret", "password_confirmation": "secret"}]' http://127.0.0.1:5001/account/set
+```
+
+### Authenticate by id
+```bash
+$ curl --user foo:bar -l -H "Content-type: application/json" -X POST -d '["yt8i-isbv-4gea", "secret"]' http://127.0.0.1:5001/account/authenticate
+```
+
 ## Roles
 
 Roles are arbitrary but this is the line of thinking when creating this lib.
