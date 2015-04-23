@@ -76,7 +76,6 @@ module.exports = function(config) {
         validations.name
       ],
       "email": [
-        validations.present,
         validations.email,
         validations.unique,
         validations.verifiedEmail
