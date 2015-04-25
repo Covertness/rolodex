@@ -75,6 +75,10 @@ module.exports = function(config) {
       "last_name": [
         validations.name
       ],
+      "phone": [
+        validations.phone,
+        validations.unique
+      ],
       "email": [
         validations.email,
         validations.unique,
@@ -407,15 +411,23 @@ module.exports = function(config) {
     var key = namespace + ":" + obj.id
     client.hgetall(key, function(err, old){
       if(!old) old = {};
-      client.multi()
+      var multi = client.multi()
       .del(namespace + ":email:" + old.email)
       .del(namespace + ":uuid:" + old.uuid)
       .hmset(key, obj)
-      .set(namespace + ":email:" + obj.email, obj.id)
       .set(namespace + ":uuid:" + obj.uuid, obj.id)
       .zadd(namespace + ":collection:role", obj.role, obj.id)
-      .zadd(namespace + ":collection:created_at", (new Date(obj.created_at).getTime()), obj.id)
-      .exec(function(err, replies){
+      .zadd(namespace + ":collection:created_at", (new Date(obj.created_at).getTime()), obj.id);
+
+      if (typeof obj.email !== 'undefined') {
+        multi.set(namespace + ":email:" + obj.email, obj.id);
+      }
+
+      if (typeof obj.phone !== 'undefined') {
+        multi.set(namespace + ":phone:" + obj.phone, obj.id);
+      }
+
+      multi.exec(function(err, replies){
         if(!err) cb(obj)
       })
     })
@@ -429,6 +441,7 @@ module.exports = function(config) {
     client.multi()
     .del(namespace + ":" + record.id)
     .del(namespace + ":email:" + record.email)
+    .del(namespace + ":phone:" + record.phone)
     .del(namespace + ":uuid:" + record.uuid)
     .zrem(namespace + ":collection:role", record.id)
     .zrem(namespace + ":collection:created_at", record.id)
