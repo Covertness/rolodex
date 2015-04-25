@@ -181,14 +181,19 @@ Authenticates the account. If successful, the account will be returned.
 
 ## Curl Command
 
-### Add/Modify account
+### Add account
 ```bash
-$ curl --user foo:bar -l -H "Content-type: application/json" -X POST -d '[{"password": "secret", "password_confirmation": "secret"}]' http://127.0.0.1:5001/account/set
+$ curl --user foo:bar -l -H "Content-type: application/json" -X POST -d '[{"phone": "13823875932", "password": "mysecret1", "password_confirmation": "mysecret1"}]' http://127.0.0.1:5001/account/set
 ```
 
-### Authenticate by id
+### Authenticate
 ```bash
-$ curl --user foo:bar -l -H "Content-type: application/json" -X POST -d '["yt8i-isbv-4gea", "secret"]' http://127.0.0.1:5001/account/authenticate
+$ curl --user foo:bar -l -H "Content-type: application/json" -X POST -d '[{"phone": "13823875932"}, "mysecret1"]' http://127.0.0.1:5001/account/authenticate
+```
+
+### Modify account by id
+```bash
+$ curl --user foo:bar -l -H "Content-type: application/json" -X POST -d '["account_id", {"password": "mysecret2", "password_confirmation": "mysecret2"}]' http://127.0.0.1:5001/account/set
 ```
 
 ## Roles
