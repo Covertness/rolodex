@@ -7,10 +7,6 @@ var rolodex = require("../")({
       "from": "info@chloi.io"
     },
     "postmark": "c34e1598-d371-4809-a418-6aac7cc8a03b"
-  },
-  "auth": {
-    "user": "foo",
-    "pass": "bar"
   }
 })
 

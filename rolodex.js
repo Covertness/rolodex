@@ -65,21 +65,25 @@ module.exports = function(options) {
     rolodex.listen = function(){
       var connect = require('connect')
       var http    = require('http')
-      var app = connect()
-        .use(connect.basicAuth(options.auth.user, options.auth.pass))
-        .use(connect.bodyParser())
-        .use(function(req, rsp){
+      var app = connect();
+
+      if (options.use_http_auth) {
+        app.use(connect.basicAuth(options.auth.user, options.auth.pass));
+      }
+
+      app.use(connect.bodyParser())
+        .use(function(req, rsp) {
           var ops = {
-            "method"  : "POST",
-            "url"     : options.master + req.url,
-            "body"    : JSON.stringify(req.body),
-            "headers" : {
-              "Accept"                  : "application/json",
-              "Content-Type"            : "application/json"
+            "method": "POST",
+            "url": options.master + req.url,
+            "body": JSON.stringify(req.body),
+            "headers": {
+              "Accept": "application/json",
+              "Content-Type": "application/json"
             }
           }
-          request(ops, function(e, r, b){
-            if(r.statusCode == 200){
+          request(ops, function(e, r, b) {
+            if (r.statusCode == 200) {
               rsp.end(b)
             }
           })
@@ -126,18 +130,22 @@ module.exports = function(options) {
     rolodex.listen = function(){
       var ar = arguments
       var connect = require('connect')
-      var app = connect()
-        .use(connect.basicAuth(options.auth.user, options.auth.pass))
-        .use(connect.bodyParser())
-        .use(function(req, rsp, next){
+      var app = connect();
+
+      if (options.use_http_auth) {
+        app.use(connect.basicAuth(options.auth.user, options.auth.pass));
+      }
+      
+      app.use(connect.bodyParser())
+        .use(function(req, rsp, next) {
           var a = req.url.split("/")
-          req.rolodexMethod     = a.pop()
-          req.roloxexNamespace  = a.pop()
+          req.rolodexMethod = a.pop()
+          req.roloxexNamespace = a.pop()
           next()
         })
-        .use(function(req, rsp){
+        .use(function(req, rsp) {
           var args = req.body
-          args.push(function(){
+          args.push(function() {
             rsp.end(JSON.stringify(Array.prototype.slice.call(arguments)))
           })
           rolodex[req.roloxexNamespace][req.rolodexMethod].apply(this, args)
